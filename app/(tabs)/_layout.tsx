@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { ThemeToggle } from "~/components/ThemeToggle";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
