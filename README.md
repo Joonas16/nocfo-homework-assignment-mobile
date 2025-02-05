@@ -2,7 +2,7 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-![image info](./assets/images/assigment-image.PNG)
+![image](https://github.com/Joonas16/nocfo-homework-assignment-mobile/blob/main/assets/images/assigment-image.png?raw=true)
 
 ## How to run the App
 
