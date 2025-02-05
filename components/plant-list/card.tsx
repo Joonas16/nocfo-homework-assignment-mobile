@@ -5,6 +5,7 @@ import { Plant } from "~/types/plant";
 import { timeAgo } from "~/lib/utils";
 import { Button } from "../ui/button";
 import { Pen } from "~/lib/icons/pen";
+import { Link } from "expo-router";
 
 type Props = {
   item: Plant;
@@ -28,9 +29,17 @@ export const Card = ({ item }: Props) => {
         <Text className="text-muted-foreground">
           {timeAgo(item.dateAdded.getTime())}
         </Text>
-        <Button variant="outline" size="icon" className="self-start">
-          <Pen size={16} className="text-muted-foreground w-4 h-4" />
-        </Button>
+        <Link
+          href={{
+            pathname: "/details/[uuid]",
+            params: { uuid: item.id },
+          }}
+          asChild
+        >
+          <Button variant="outline" size="icon" className="self-start">
+            <Pen size={16} className="text-muted-foreground w-4 h-4" />
+          </Button>
+        </Link>
       </View>
     </View>
   );

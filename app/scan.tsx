@@ -17,6 +17,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Plant from "~/components/plant";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
@@ -24,12 +25,9 @@ import { usePlantContext } from "~/db/context";
 import { generateUUID } from "~/lib/utils";
 
 export default function Scan() {
-  const insets = useSafeAreaInsets();
   const cameraRef = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
   const [image, setImage] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [notes, setNotes] = useState("");
   const router = useRouter();
   const { addPlant } = usePlantContext();
   const keyboard = useAnimatedKeyboard();
@@ -65,7 +63,7 @@ export default function Scan() {
     }
   };
 
-  const onSave = () => {
+  const onSave = (name: string, notes: string) => {
     if (!image || !name) {
       return;
     }
@@ -74,44 +72,14 @@ export default function Scan() {
       id: generateUUID(),
       imageUri: image,
       name,
+      notes,
     });
 
     router.replace("/");
   };
 
   if (image) {
-    return (
-      <Animated.View
-        className="flex-1"
-        style={[animatedStyles, { paddingBottom: insets.bottom + 16 }]}
-      >
-        <Image
-          source={image}
-          style={{
-            width: "100%",
-            height: 384,
-            objectFit: "contain",
-          }}
-          contentFit="cover"
-        />
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View className="flex-1">
-            <View className="px-4 pt-4 gap-2">
-              <Input placeholder="Name" value={name} onChangeText={setName} />
-              <Textarea
-                placeholder="Notes"
-                value={notes}
-                onChangeText={setNotes}
-              />
-            </View>
-
-            <Button className="mt-4 mx-4 self-end" onPress={onSave}>
-              <Text className="">Save</Text>
-            </Button>
-          </View>
-        </TouchableWithoutFeedback>
-      </Animated.View>
-    );
+    return <Plant image={image} onSave={onSave} />;
   }
 
   return (

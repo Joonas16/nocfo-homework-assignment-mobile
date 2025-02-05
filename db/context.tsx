@@ -4,7 +4,9 @@ import { Plant } from "~/types/plant";
 export type PlantContextType = {
   plants: Plant[];
   addPlant: (plant: Plant) => void;
-  removePlant: (id: string) => void;
+  removePlantById: (id: string) => void;
+  getPlantById: (id: string) => Plant | undefined;
+  updatePlantById: (id: string, plant: Plant) => void;
 };
 
 const PlantContext = createContext<PlantContextType | undefined>(undefined);
@@ -16,12 +18,28 @@ export const PlantProvider = ({ children }: { children: ReactNode }) => {
     setPlants((prevPlants) => [...prevPlants, plant]);
   };
 
-  const removePlant = (id: string) => {
+  const removePlantById = (id: string) => {
     setPlants((prevPlants) => prevPlants.filter((plant) => plant.id !== id));
   };
 
+  const getPlantById = (id: string) => {
+    return plants.find((plant) => plant.id === id);
+  };
+
+  const updatePlantById = (id: string, plant: Plant) => {
+    setPlants((prevPlants) => prevPlants.map((p) => (p.id === id ? plant : p)));
+  };
+
   return (
-    <PlantContext.Provider value={{ plants, addPlant, removePlant }}>
+    <PlantContext.Provider
+      value={{
+        plants,
+        addPlant,
+        removePlantById,
+        getPlantById,
+        updatePlantById,
+      }}
+    >
       {children}
     </PlantContext.Provider>
   );

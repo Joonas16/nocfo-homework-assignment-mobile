@@ -3,4 +3,5 @@ export type Plant = {
   name: string;
   dateAdded: Date;
   imageUri: string;
+  notes?: string;
 };

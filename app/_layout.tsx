@@ -63,10 +63,10 @@ export default function RootLayout() {
             name="scan"
             options={{
               headerTitle: "Add Plant",
-              headerBackTitle: undefined,
               headerBackButtonDisplayMode: "minimal",
             }}
           />
+          <Stack.Screen name="details/[uuid]" />
         </Stack>
         <PortalHost />
       </ThemeProvider>
