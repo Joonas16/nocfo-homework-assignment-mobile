@@ -1,26 +1,11 @@
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { Image } from "expo-image";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
-import Animated, {
-  useAnimatedKeyboard,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Pressable, View } from "react-native";
+import { useAnimatedKeyboard, useAnimatedStyle } from "react-native-reanimated";
 import Plant from "~/components/plant";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
+import { Text } from "~/components/ui/text";
 import { usePlantContext } from "~/db/context";
 import { generateUUID } from "~/lib/utils";
 
