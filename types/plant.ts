@@ -1,6 +1,6 @@
 export type Plant = {
-  id: number;
+  id: string;
   name: string;
-  dateAdded: number;
+  dateAdded: Date;
   imageUri: string;
 };

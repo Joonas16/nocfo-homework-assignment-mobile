@@ -1,27 +1,42 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { usePlantContext } from "~/db/context";
+import { generateUUID } from "~/lib/utils";
 
 export default function Scan() {
   const insets = useSafeAreaInsets();
   const cameraRef = useRef<CameraView>(null);
-  const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [image, setImage] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [notes, setNotes] = useState("");
+  const router = useRouter();
+  const { addPlant } = usePlantContext();
+  const keyboard = useAnimatedKeyboard();
+
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [{ translateY: -keyboard.height.value }],
+  }));
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -31,11 +46,11 @@ export default function Scan() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
+      <View className="flex-1 items-center justify-center gap-4">
+        <Text className="text-2xl text-center px-4">
           We need your permission to show the camera
         </Text>
-        <Button onPress={requestPermission}>
+        <Button variant="outline" onPress={requestPermission}>
           <Text>Grant permission</Text>
         </Button>
       </View>
@@ -50,9 +65,26 @@ export default function Scan() {
     }
   };
 
+  const onSave = () => {
+    if (!image || !name) {
+      return;
+    }
+    addPlant({
+      dateAdded: new Date(),
+      id: generateUUID(),
+      imageUri: image,
+      name,
+    });
+
+    router.replace("/");
+  };
+
   if (image) {
     return (
-      <View className="flex-1" style={{ paddingBottom: insets.bottom + 16 }}>
+      <Animated.View
+        className="flex-1"
+        style={[animatedStyles, { paddingBottom: insets.bottom + 16 }]}
+      >
         <Image
           source={image}
           style={{
@@ -62,65 +94,39 @@ export default function Scan() {
           }}
           contentFit="cover"
         />
-        <View className="px-4 pt-4 gap-2">
-          <Input placeholder="Name" />
-          <Textarea placeholder="Notes" />
-        </View>
-        <Button className="mt-4 mx-4 self-end">
-          <Text className="text-white">Save</Text>
-        </Button>
-      </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="flex-1">
+            <View className="px-4 pt-4 gap-2">
+              <Input placeholder="Name" value={name} onChangeText={setName} />
+              <Textarea
+                placeholder="Notes"
+                value={notes}
+                onChangeText={setNotes}
+              />
+            </View>
+
+            <Button className="mt-4 mx-4 self-end" onPress={onSave}>
+              <Text className="">Save</Text>
+            </Button>
+          </View>
+        </TouchableWithoutFeedback>
+      </Animated.View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <CameraView
-        className="flex-1"
-        style={styles.camera}
-        facing={facing}
-        ref={cameraRef}
-      >
+    <View className="flex-1">
+      <CameraView style={{ flex: 1 }} ref={cameraRef} ratio="1:1">
         <View className="flex-1 "></View>
-        <View className="h-96 w-full bg-[rgba(0,0,0,70%)] items-center justify-center">
-          <Pressable
-            className="p-2 bg-slate-100 rounded-full"
-            onPress={takeAPicture}
-          >
-            <View className="rounded-full bg-white h-14 w-14 border-2  border-black" />
-          </Pressable>
-        </View>
       </CameraView>
+      <View className="h-96 w-full bg-primary items-center justify-center">
+        <Pressable
+          className="p-2 bg-slate-100 rounded-full"
+          onPress={takeAPicture}
+        >
+          <View className="rounded-full bg-white h-14 w-14 border-2  border-black" />
+        </Pressable>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  message: {
-    textAlign: "center",
-    paddingBottom: 10,
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
-  },
-});

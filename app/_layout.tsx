@@ -13,6 +13,7 @@ import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { PlantProvider } from "~/db/context";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -48,17 +49,27 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
-      <PortalHost />
-    </ThemeProvider>
+    <PlantProvider>
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="scan"
+            options={{
+              headerTitle: "Add Plant",
+              headerBackTitle: undefined,
+              headerBackButtonDisplayMode: "minimal",
+            }}
+          />
+        </Stack>
+        <PortalHost />
+      </ThemeProvider>
+    </PlantProvider>
   );
 }

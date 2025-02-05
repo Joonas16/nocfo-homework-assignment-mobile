@@ -1,37 +1,30 @@
 import { useCallback } from "react";
 import { FlatList, View } from "react-native";
-import { Card } from "~/components/card";
-import { Button } from "~/components/ui/button";
 import { Plant } from "~/types/plant";
-import { Plus } from "~/lib/icons/plus";
-import { Text } from "~/components/ui/text";
-import { Link } from "expo-router";
+import { usePlantContext } from "~/db/context";
+import { Card } from "~/components/plant-list/card";
+import { EmptyItem } from "~/components/plant-list/empty-item";
+import { AddPlantHeader } from "~/components/plant-list/add-plant-header";
 
 export default function HomeScreen() {
+  const { plants } = usePlantContext();
   const renderItem = useCallback(
     ({ item }: { item: Plant }) => <Card item={item} />,
     []
   );
   const keyExtractor = useCallback((item: Plant) => item.id.toString(), []);
 
+  const sortedPlants = plants.sort(
+    (a, b) => b.dateAdded.getTime() - a.dateAdded.getTime()
+  );
+
   return (
     <View className="flex-1">
       <FlatList
-        data={data}
+        data={sortedPlants}
+        ListEmptyComponent={EmptyItem}
         className="flex-1"
-        ListHeaderComponent={
-          <View className="items-start px-4">
-            <Link href="/scan" asChild>
-              <Button
-                variant="secondary"
-                className="flex-row gap-2 items-center"
-              >
-                <Text>Add a new plant</Text>
-                <Plus size={16} className="color-foreground" />
-              </Button>
-            </Link>
-          </View>
-        }
+        ListHeaderComponent={AddPlantHeader}
         contentContainerClassName="py-4 gap-8"
         renderItem={renderItem}
         keyExtractor={keyExtractor}
@@ -39,20 +32,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const data: Plant[] = [
-  {
-    id: 0,
-    name: "Talvikukka",
-    dateAdded: Date.now() - 1000 * 60 * 60 * 24 * 2,
-    imageUri:
-      "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-  {
-    id: 1,
-    name: "Päivänkakkara",
-    dateAdded: Date.now() - 1000 * 60 * 80 * 24 * 1,
-    imageUri:
-      "https://images.unsplash.com/photo-1606041008023-472dfb5e530f?q=80&w=2333&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
