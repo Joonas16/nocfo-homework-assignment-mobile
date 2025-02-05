@@ -1,16 +1,35 @@
-# Starter base
+# Plant management App
 
-A starting point to help you set up your project quickly and use the common components provided by `react-native-reusables`. The idea is to make it easier for you to get started.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Features
+## How to run the App
 
-- NativeWind v4
-- Dark and light mode
-  - Android Navigation Bar matches mode
-  - Persistent mode
-- Common components
-  - ThemeToggle, Avatar, Button, Card, Progress, Text, Tooltip
+1. Clone the repository
 
-<img src="https://github.com/mrzachnugent/react-native-reusables/assets/63797719/42c94108-38a7-498b-9c70-18640420f1bc"
-     alt="starter-base-template"
-     style="width:270px;" />
+2. Install dependencies
+
+```
+pnpm install
+```
+
+3. Run the App
+
+```
+pnpm dev
+```
+
+## Architecture and Technical Decisions
+
+### Architecture
+
+The app is built using React Native, which allows for cross-platform development.
+
+**TypeScript**: TypeScript is used for type safety and better developer experience.\
+**Navigation**: Expo Router with file based routing\
+**State Management**: The app uses React's built-in state management (context) for managing component state.
+
+`/db` folder would normally include other stuff related to database and API's, but for the demo, there is only context
+
+### Technical Decisions
+
+**Styling**: Nativewind & [React Native Reusables](https://rnr-docs.vercel.app/getting-started/introduction/) for quick and easy styling.
